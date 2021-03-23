@@ -1,0 +1,76 @@
+/* 移动端项目 */
+@import url("./normalize.css");
+
+:root {
+	--color-text: #666;
+	--color-high-text: #ff5777;
+	--color-tint: #ff8198;
+	--color-background: #fff;
+	--font-size: 14px;
+	--line-height: 1.5
+}
+
+*,
+*:before,
+*:after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	width: 100vw;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+	-webkit-tap-highlight-color: transparent;
+	background: var(--color-background);
+	color: var(--color-text)
+}
+
+html {
+	height: 100%;
+	box-sizing: border-box;
+}
+
+a:focus,
+a:active {
+	outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+	cursor: pointer;
+	color: var(--color-text);
+	text-decoration: none;
+}
+
+div:focus {
+	outline: none;
+}
+
+.fr {
+	float: right;
+}
+
+.fl {
+	float: left;
+}
+
+.block {
+	display: block;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
