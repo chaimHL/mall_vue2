@@ -1,3 +1,4 @@
+<!-- 首页 -->
 <template>
   <div id="home">
     <!-- 用于做切换 tab 的吸顶效果 -->
@@ -29,27 +30,30 @@
     </scroll>
     <!-- 可滚动区域---结束 -->
     <back-to-top v-show="showBackToTop" @click.native="handleBackToTop" />
+    <main-tab-bar />
   </div>
 </template>
 
 <script>
+  import MainTabBar from '@/components/content/MainTabBar/MainTabBar.vue'
   import NavBar from 'components/common/NavBar/NavBar.vue'
   import SwitchTab from 'components/common/SwitchTab/SwitchTab.vue'
   import Scroll from 'components/common/Scroll/Scroll.vue'
-  import BackToTop from 'components/common/BackToTop/BackToTop'
   import GoodList from 'components/content/GoodList/GoodList.vue'
   import { getHomeMultiData, fetchHomeGoods } from '@/api/home.js'
   import { debounce } from '@/utils/debounce.js'
+  import { backTopMixin } from '@/common/mixin.js'
 
   export default {
     name: 'Home',
     components: {
+      MainTabBar,
       NavBar,
       SwitchTab,
       Scroll,
-      BackToTop,
       GoodList
     },
+    mixins: [backTopMixin],
     data() {
       return {
         banner: [],
@@ -60,7 +64,6 @@
           sell: { page: 0, list: [] }
         },
         curType: 'pop',
-        showBackToTop: false,
         tabOffsetTop: 0,
         stickyTab: false,
         leaveY: 0, // 记录离开页面时y轴的位置
@@ -81,11 +84,7 @@
     },
     mounted() {
       // 监听图片加载完成
-      const refresh = debounce(this.$refs.scroll.refresh)
-      this.$bus.$on('imgLoad', () => {
-        // this.$refs.scroll && this.$refs.scroll.refresh()
-        refresh()
-      })
+      this.$bus.$on('imgLoad', this.refresh)
     },
     activated() {
       this.$refs.scroll &&  this.$refs.scroll.scrollTo(0, this.leaveY, 0)
@@ -94,6 +93,8 @@
     },
     deactivated() {
       this.leaveY = this.$refs.scroll ? this.$refs.scroll.getBetterScrollY() : 0
+      // 离开页面取消监听
+      this.$bus.$off('imgLoad', this.refresh)
     },
     methods: {
       /**
@@ -115,14 +116,8 @@
         this.$refs.switchTab1.currentIndex = index
         this.$refs.switchTab2.currentIndex = index
       },
-      // 回到顶部
-      handleBackToTop() {
-        this.$refs.scroll.scrollTo(0, 0)
-      },
-      // 回到顶部按钮显示隐藏
       contentScroll(position) {
-        // 回到顶部的显示隐藏
-        this.showBackToTop = Math.abs(position.y) > 1000
+        this.showBackTop(position)
         // 切换 tab 的显示隐藏
         this.stickyTab = Math.abs(position.y) > this.tabOffsetTop
       },
@@ -133,6 +128,10 @@
       // banner 图片加载完成，计算切换 tab 的准确高度
       bannerLoad() {
         this.tabOffsetTop = this.$refs.switchTab1.$el.offsetTop
+      },
+      // 重新计算可滚动高度
+      refresh() {
+        debounce(this.$refs.scroll.refresh).call()
       },
       /**
        * 接口相关

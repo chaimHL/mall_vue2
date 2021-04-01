@@ -1,7 +1,7 @@
 <template>
-  <div class="item-box">
+  <div class="item-box" @click="handleClickItem">
     <div class="img-wrap">
-      <img :src="goodObj.show.img" alt="" @load="imgLoad">
+      <img :src="imgSrc" alt="" @load="imgLoad">
     </div>
     <div class="item-text">{{ goodObj.title }}</div>
   </div>
@@ -18,9 +18,18 @@
         }
       }
     },
+    computed: {
+      imgSrc() {
+        return this.goodObj.image || this.goodObj.show.img
+      }
+    },
     methods: {
       imgLoad() {
         this.$bus.$emit('imgLoad')
+      },
+      // 点击跳转详情
+      handleClickItem() {
+        this.$router.push('/details/' + this.goodObj.iid)
       }
     }
   }
