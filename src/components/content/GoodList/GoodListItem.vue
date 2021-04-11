@@ -1,7 +1,7 @@
 <template>
   <div class="item-box" @click="handleClickItem">
     <div class="img-wrap">
-      <img :src="imgSrc" alt="" @load="imgLoad">
+      <img v-lazy="imgSrc" alt="" @load="imgLoad">
     </div>
     <div class="item-text">{{ goodObj.title }}</div>
   </div>

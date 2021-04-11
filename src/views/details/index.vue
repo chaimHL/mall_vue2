@@ -43,8 +43,8 @@
       <good-list :goodList="recommend" ref="recommend" />
     </scroll>
     <back-to-top v-show="showBackToTop" @click.native="handleBackToTop" />
-    <!-- 底部栏 -->
-    <detail-bottom-bar />
+    <!-- 底部按钮栏 -->
+    <detail-bottom-bar @addToCart="listenAddToCart" />
   </div>
 </template>
 
@@ -57,6 +57,7 @@
   import { getDetailData, GoodInfo, getDetailRecommend } from '@/api/details.js'
   import { fomateDate } from '@/filters/index.js'
   import { backTopMixin } from '@/common/mixin.js'
+  import { mapActions } from 'vuex'
 
   export default {
     name: 'Details',
@@ -76,7 +77,7 @@
         navTitleList: ['商品', '评论', '推荐'],
         curIndex: 0,
         bannerImgs: null,
-        goodId: [],
+        goodId: null,
         goodInfo: {},
         detailList: [],
         count: 0, // 计算详情图片个数
@@ -112,6 +113,7 @@
       })
     },
     methods: {
+      ...mapActions(['addCart']),
       handleClickTitle(index) {
         this.curIndex = index
         // 点击顶部标题导航，滚动到相应位置
@@ -172,6 +174,20 @@
         }
         // 回到顶部
         this.showBackTop(position)
+      },
+      // 监听加入购物车按钮
+      listenAddToCart() {
+        const goodObj = {
+          id: this.goodId,
+          img: this.bannerImgs[0],
+          title: this.goodInfo?.title, // ?.是可选链
+          price: this.goodInfo?.price,
+          lowPrice: this.goodInfo?.lowPrice
+        }
+        // this.$store.dispatch('addCart', goodObj)
+        this.addCart(goodObj).then(res => {
+          this.$toast.showToast(res)
+        })
       }
     }
   }

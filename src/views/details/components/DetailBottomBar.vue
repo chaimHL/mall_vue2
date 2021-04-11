@@ -1,12 +1,17 @@
 <template>
-  <div class="bottom-bar">
-    <div>加入购物车</div>
+  <div class="bottom-bar" @click="handleClickAddToCart">
+    加入购物车
   </div>
 </template>
 
 <script>
   export default {
-    name: 'DetailBottomBar'
+    name: 'DetailBottomBar',
+    methods: {
+      handleClickAddToCart() {
+        this.$emit('addToCart')
+      }
+    }
   }
 </script>
 
